@@ -54,19 +54,27 @@ class Parser:
 
         raise RuntimeError("Unexpected token", tok)
 
-    def _parse_unary_operation(self) -> Instruction:
-        current_token = self._current_token()
+    def _parse_zero_priority_expression(self) -> Instruction:
+        tok = self._current_token()
 
-        if current_token.type == TokenType.PLUS:
-            op_type = OperationType.ADDITION
-        elif current_token.type == TokenType.MINUS:
-            op_type = OperationType.SUBTRACTION
-        else:
+        if tok.type != TokenType.LPAREN:
             return self._parse_leaf()
 
         self._consume_token()
+        expr = self._parse_instruction()
 
-        return UnaryOperation(op_type, self._parse_instruction())
+        self._expect_token(TokenType.RPAREN)
+
+        return expr
+
+    def _parse_unary_operation(self) -> Instruction:
+        current_token = self._current_token()
+
+        if current_token.type == TokenType.MINUS:
+            self._consume_token()
+            return UnaryOperation(OperationType.SUBTRACTION, self._parse_unary_operation())
+
+        return self._parse_zero_priority_expression()
 
     def _expect_token(self, token_type: TokenType):
         consumed = self._consume_token()
