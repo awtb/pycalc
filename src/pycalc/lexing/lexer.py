@@ -1,5 +1,6 @@
 from typing import List
 
+from src.pycalc.lexing.constants import CHARS_TOKEN_MAPPING
 from src.pycalc.lexing.types import Token, TokenType
 
 
@@ -7,15 +8,29 @@ class Lexer:
     def __init__(self, text):
         self.text = text
         self._pos = 0
+        self._result = []
 
-    def _get_value(self):
+    def _parse_literal(self) -> Token:
         value = ""
         tok_type = TokenType.INT
 
         while self._pos < len(self.text):
             if self.text[self._pos] == ".":
                 tok_type = TokenType.FLOAT
-            if not self.text[self._pos].isdigit():
+            elif not self.text[self._pos].isdigit():
+                break
+
+            value += self.text[self._pos]
+            self._pos += 1
+
+        return Token(tok_type, value)
+
+    def _parse_name(self) -> Token:
+        value = ""
+        tok_type = TokenType.IDENT
+
+        while self._pos < len(self.text):
+            if not self.text[self._pos].isalpha() and not self.text[self._pos].isdigit():
                 break
 
             value += self.text[self._pos]
@@ -24,26 +39,26 @@ class Lexer:
         return Token(tok_type, value)
 
     def tokenize(self) -> List[Token]:
-        result = []
-
         while self._pos < len(self.text):
-
-            if self.text[self._pos] == "*":
-                result.append(Token(TokenType.MUL, "*"))
-            if self.text[self._pos] == "-":
-                result.append(Token(TokenType.MINUS, self.text[self._pos]))
-            elif self.text[self._pos] == '(':
-                result.append(Token(TokenType.LPAREN, '('))
-            elif self.text[self._pos] == ')':
-                result.append(Token(TokenType.RPAREN, ')'))
-
+            if self.text[self._pos] in CHARS_TOKEN_MAPPING:
+                self._result.append(
+                    Token(
+                        CHARS_TOKEN_MAPPING[self.text[self._pos]],
+                        self.text[self._pos],
+                    )
+                )
+                self._pos += 1
             elif self.text[self._pos].isdigit():
-                result.append(
-                    self._get_value()
+                self._result.append(
+                    self._parse_literal()
                 )
                 continue
 
-            self._pos += 1
+            elif self.text[self._pos].isalpha():
+                self._result.append(
+                    self._parse_name(),
+                )
+            elif self.text[self._pos].isspace():
+                self._pos += 1
 
-
-        return result
+        return self._result
