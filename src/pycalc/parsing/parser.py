@@ -22,8 +22,11 @@ class Parser:
         token = self._tokens[self._pos + 1]
         return token
 
-    def _current_token(self) -> Token:
-        return self._tokens[self._pos]
+    def _current_token(self) -> Token | None:
+        try:
+            return self._tokens[self._pos]
+        except IndexError:
+            return None
 
     def _parse_op_type(self) -> OperationType:
         tok = self._consume_token()
@@ -51,18 +54,6 @@ class Parser:
 
         raise RuntimeError("Unexpected token", tok)
 
-    def _token_type_to_op_type(self, token_type: TokenType) -> OperationType:
-        if token_type == TokenType.MUL:
-            return OperationType.MULTIPLICATION
-        elif token_type == TokenType.DIV:
-            return OperationType.DIVISION
-        elif token_type == TokenType.PLUS:
-            return OperationType.ADDITION
-        elif token_type == TokenType.MINUS:
-            return OperationType.SUBTRACTION
-
-        raise RuntimeError("Unexpected token", token_type)
-
     def _parse_unary_operation(self) -> Instruction:
         current_token = self._current_token()
 
@@ -89,61 +80,62 @@ class Parser:
         if (self._pos + 1) < len(self._tokens):
             return self._tokens[self._pos + 1].type
 
-    def _parse_binary_operation(self) -> Instruction:
+    def _parse_high_priority_binary_operation(self) -> Instruction:
+        expression = self._parse_unary_operation()
 
-        current_token = self._current_token()
+        while True:
+            current_token = self._current_token()
 
-        # If expression starts with `(`
-        if current_token.type == TokenType.LPAREN:
+            if current_token is None:
+                break
+
+            if current_token.type == TokenType.MUL:
+                op_type = OperationType.MULTIPLICATION
+
+            elif current_token.type == TokenType.DIV:
+                op_type = OperationType.DIVISION
+            else:
+                break
+
             self._consume_token()
-            op = self._parse_unary_operation()
-            self._expect_token(TokenType.RPAREN)
-            return op
 
-        first_expr = self._parse_unary_operation()
-
-        if self._pos >= len(self._tokens):
-            return first_expr
-
-        current_token = self._current_token()
-
-        if current_token.type == TokenType.PLUS:
-            op_type = OperationType.ADDITION
-        elif current_token.type == TokenType.MINUS:
-            op_type = OperationType.SUBTRACTION
-        elif current_token.type == TokenType.MUL:
-            op_type = OperationType.MULTIPLICATION
-        elif current_token.type == TokenType.DIV:
-            op_type = OperationType.DIVISION
-        else:
-            # If there's no approaches to parse binary operation (there's no other ops)
-            # Just return first expression and continue parsing.
-            return first_expr
-
-        self._consume_token()
-
-        current_token = self._current_token()
-
-        if current_token.type == TokenType.LPAREN:
-            self._consume_token()
-            result = BinaryOperation(
-                self._parse_instruction(),
-                first_expr,
-                op_type,
+            expression = BinaryOperation(
+                op_type=op_type,
+                left=expression,
+                right=self._parse_unary_operation(),
             )
-            self._expect_token(TokenType.RPAREN)
-            return result
 
-        if op_type in (OperationType.MULTIPLICATION, OperationType.DIVISION):
-            # Do something
-            return BinaryOperation(self._parse_instruction(), first_expr, op_type)
+        return expression
 
-        return BinaryOperation(first_expr, self._parse_instruction(), op_type)
+    def _parse_low_priority_binary_operation(self) -> Instruction:
+        expression = self._parse_high_priority_binary_operation()
+
+        while True:
+            current_token = self._current_token()
+
+            if current_token is None:
+                break
+
+            if current_token.type == TokenType.PLUS:
+                op_type = OperationType.ADDITION
+
+            elif current_token.type == TokenType.MINUS:
+                op_type = OperationType.SUBTRACTION
+            else:
+                break
+
+            self._consume_token()
+
+            expression = BinaryOperation(
+                op_type=op_type,
+                left=expression,
+                right=self._parse_high_priority_binary_operation(),
+            )
+
+        return expression
 
     def _parse_instruction(self) -> Instruction:
-        # Let's try to parse binop
-
-        return self._parse_binary_operation()
+        return self._parse_low_priority_binary_operation()
 
     def parse(self) -> Instruction:
         return self._parse_instruction()
