@@ -28,7 +28,7 @@ class Program(Instruction):
         self.instructions = instruction
 
 
-class Constant(Instruction):
+class ConstantInstruction(Instruction):
     """Constant instruction class."""
 
     def __init__(
