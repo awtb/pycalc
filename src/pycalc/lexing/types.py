@@ -20,3 +20,7 @@ class Token:
 
     def __str__(self):
         return f"{self.type}: {self.value}"
+
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.type}, {self.value})"
