@@ -7,4 +7,5 @@ CHARS_TOKEN_MAPPING = {
     '/': TokenType.DIV,
     '(': TokenType.LPAREN,
     ')': TokenType.RPAREN,
+    "^": TokenType.POW,
 }
