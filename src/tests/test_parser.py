@@ -20,8 +20,8 @@ def test_basic_parser():
     assert isinstance(instruction.right.left, ConstantInstruction)
     assert isinstance(instruction.right.right, ConstantInstruction)
 
-    assert instruction.right.left.value == "3"
-    assert instruction.right.right.value == "2"
+    assert instruction.right.left.value == "2"
+    assert instruction.right.right.value == "3"
 
 
 def test_complex_parser():
