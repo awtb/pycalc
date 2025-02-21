@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class TokenType(Enum):
+class TokenType(StrEnum):
     INT = "INT"
     FLOAT = "FLOAT"
     PLUS = "PLUS"
@@ -10,7 +10,8 @@ class TokenType(Enum):
     DIV = "DIV"
     LPAREN = "LPAREN"
     RPAREN = "RPAREN"
-
+    IDENT = "NAME"
+    POW = "POW"
 
 class Token:
     def __init__(self, token_type, value):
