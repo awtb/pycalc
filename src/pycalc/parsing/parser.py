@@ -1,7 +1,7 @@
 from typing import List
 
 from pycalc.lexing.types import Token, TokenType
-from pycalc.parsing.types import OperationType, Instruction, BinaryOperation, Constant, ConstantType, \
+from pycalc.parsing.types import OperationType, Instruction, BinaryOperation, ConstantInstruction, ConstantType, \
     IdentifierInstruction, UnaryOperation
 
 
@@ -43,9 +43,9 @@ class Parser:
         tok = self._consume_token()
 
         if tok.type == TokenType.FLOAT:
-            return Constant(tok.value, ConstantType.FLOAT)
+            return ConstantInstruction(tok.value, ConstantType.FLOAT)
         elif tok.type == TokenType.INT:
-            return Constant(tok.value, ConstantType.INT)
+            return ConstantInstruction(tok.value, ConstantType.INT)
         elif tok.type == TokenType.IDENT:
             return IdentifierInstruction(tok.value)
 
@@ -77,7 +77,29 @@ class Parser:
 
         return UnaryOperation(op_type, self._parse_instruction())
 
+    def _expect_token(self, token_type: TokenType):
+        consumed = self._consume_token()
+
+        if consumed.type != token_type:
+            raise RuntimeError("Unexpected token", consumed)
+
+        return consumed
+
+    def _next_type(self) -> TokenType | None:
+        if (self._pos + 1) < len(self._tokens):
+            return self._tokens[self._pos + 1].type
+
     def _parse_binary_operation(self) -> Instruction:
+
+        current_token = self._current_token()
+
+        # If expression starts with `(`
+        if current_token.type == TokenType.LPAREN:
+            self._consume_token()
+            op = self._parse_unary_operation()
+            self._expect_token(TokenType.RPAREN)
+            return op
+
         first_expr = self._parse_unary_operation()
 
         if self._pos >= len(self._tokens):
@@ -91,12 +113,8 @@ class Parser:
             op_type = OperationType.SUBTRACTION
         elif current_token.type == TokenType.MUL:
             op_type = OperationType.MULTIPLICATION
-            self._consume_token()
-            return BinaryOperation(self._parse_instruction(), first_expr, op_type)
         elif current_token.type == TokenType.DIV:
             op_type = OperationType.DIVISION
-            self._consume_token()
-            return BinaryOperation(self._parse_instruction(), first_expr, op_type)
         else:
             # If there's no approaches to parse binary operation (there's no other ops)
             # Just return first expression and continue parsing.
@@ -104,9 +122,28 @@ class Parser:
 
         self._consume_token()
 
+        current_token = self._current_token()
+
+        if current_token.type == TokenType.LPAREN:
+            self._consume_token()
+            result = BinaryOperation(
+                self._parse_instruction(),
+                first_expr,
+                op_type,
+            )
+            self._expect_token(TokenType.RPAREN)
+            return result
+
+        if op_type in (OperationType.MULTIPLICATION, OperationType.DIVISION):
+            # Do something
+            return BinaryOperation(self._parse_instruction(), first_expr, op_type)
+
         return BinaryOperation(first_expr, self._parse_instruction(), op_type)
 
     def _parse_instruction(self) -> Instruction:
         # Let's try to parse binop
 
         return self._parse_binary_operation()
+
+    def parse(self) -> Instruction:
+        return self._parse_instruction()
