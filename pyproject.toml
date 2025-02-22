@@ -16,3 +16,7 @@ dependencies = [
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 packages = [{ include = "pycalc", from = "src" }]
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+
