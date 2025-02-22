@@ -19,7 +19,6 @@ class Lexer:
 
         return value
 
-
     def _parse_literal(self) -> Token:
         """
         Parses a constant expressions like `123` or `12.1`
