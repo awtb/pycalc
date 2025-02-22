@@ -13,6 +13,7 @@ class TokenType(StrEnum):
     IDENT = "NAME"
     POW = "POW"
 
+
 class Token:
     def __init__(self, token_type, value):
         self.type = token_type
@@ -20,7 +21,6 @@ class Token:
 
     def __str__(self):
         return f"{self.type}: {self.value}"
-
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.type}, {self.value})"
