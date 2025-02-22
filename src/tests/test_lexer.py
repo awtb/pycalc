@@ -3,9 +3,7 @@ from pycalc.lexing.types import TokenType
 
 
 def test_lexer_basic_tokenization():
-    lexer = Lexer(
-        "2 + 2 * 10"
-    )
+    lexer = Lexer("2 + 2 * 10")
 
     tokens = lexer.tokenize()
 
@@ -22,9 +20,7 @@ def test_lexer_basic_tokenization():
 
 
 def test_more_complex_tokenization():
-    lexer = Lexer(
-        "(2 + 32) / 10-4.23*1 +a+b"
-    )
+    lexer = Lexer("(2 + 32) / 10-4.23*1 +a+b")
 
     tokens = lexer.tokenize()
 
@@ -57,9 +53,7 @@ def test_more_complex_tokenization():
 
 
 def test_super_hard_lexer_case():
-    lexer = Lexer(
-        "((3.14 * -42) + 7 / (2.0 - x)) * 10.5 ^ 2 + abc123 -+5"
-    )
+    lexer = Lexer("((3.14 * -42) + 7 / (2.0 - x)) * 10.5 ^ 2 + abc123 -+5")
 
     tokens = lexer.tokenize()
 
