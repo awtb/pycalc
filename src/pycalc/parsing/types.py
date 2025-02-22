@@ -1,6 +1,5 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from enum import Enum
-from typing import List
 
 
 class OperationType(Enum):
@@ -31,11 +30,7 @@ class Program(Instruction):
 class ConstantInstruction(Instruction):
     """Constant instruction class."""
 
-    def __init__(
-        self,
-        value: str,
-        constant_type
-    ):
+    def __init__(self, value: str, constant_type):
         self.value = value
         self.constant_type = constant_type
 
