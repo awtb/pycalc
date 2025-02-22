@@ -1,8 +1,15 @@
 from typing import List
 
 from pycalc.lexing.types import Token, TokenType
-from pycalc.parsing.types import OperationType, Instruction, BinaryOperation, ConstantInstruction, ConstantType, \
-    IdentifierInstruction, UnaryOperation
+from pycalc.parsing.types import (
+    OperationType,
+    Instruction,
+    BinaryOperation,
+    ConstantInstruction,
+    ConstantType,
+    IdentifierInstruction,
+    UnaryOperation,
+)
 
 
 class Parser:
@@ -15,32 +22,11 @@ class Parser:
         self._pos += 1
         return token
 
-    def _has_next(self) -> bool:
-        return self._pos >= len(self._tokens)
-
-    def _next_token(self) -> Token:
-        token = self._tokens[self._pos + 1]
-        return token
-
     def _current_token(self) -> Token | None:
         try:
             return self._tokens[self._pos]
         except IndexError:
             return None
-
-    def _parse_op_type(self) -> OperationType:
-        tok = self._consume_token()
-
-        if tok.type == TokenType.MUL:
-            return OperationType.MULTIPLICATION
-        elif tok.type == TokenType.DIV:
-            return OperationType.DIVISION
-        elif tok.type == TokenType.PLUS:
-            return OperationType.ADDITION
-        elif tok.type == TokenType.MINUS:
-            return OperationType.SUBTRACTION
-
-        raise RuntimeError("Unexpected token", tok)
 
     def _parse_leaf(self) -> Instruction:
         tok = self._consume_token()
@@ -57,6 +43,9 @@ class Parser:
     def _parse_zero_priority_expression(self) -> Instruction:
         tok = self._current_token()
 
+        if tok is None:
+            raise RuntimeError("Unexpected EOF")
+
         if tok.type != TokenType.LPAREN:
             return self._parse_leaf()
 
@@ -72,7 +61,9 @@ class Parser:
 
         if current_token.type == TokenType.MINUS:
             self._consume_token()
-            return UnaryOperation(OperationType.SUBTRACTION, self._parse_unary_operation())
+            return UnaryOperation(
+                OperationType.SUBTRACTION, self._parse_unary_operation()
+            )
 
         return self._parse_zero_priority_expression()
 
@@ -145,5 +136,10 @@ class Parser:
     def _parse_instruction(self) -> Instruction:
         return self._parse_low_priority_binary_operation()
 
-    def parse(self) -> Instruction:
-        return self._parse_instruction()
+    def parse(self) -> List[Instruction]:
+        instructions_list = []
+
+        while self._pos < len(self._tokens):
+            instructions_list.append(self._parse_instruction())
+
+        return instructions_list
