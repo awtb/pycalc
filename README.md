@@ -23,7 +23,7 @@ pip install git+https://github.com/awtb/pycalc
 python -m pycalc --expression 2 + 2 / 4
 ```
 
-Want a repl?
+Want a REPL?
 ```bash
 python -m pycalc
 ```
