@@ -1,5 +1,6 @@
 from typing import List
 
+from pycalc.exceptions.parser import UnexpectedTokenError, EOF
 from pycalc.lexing.types import Token, TokenType
 from pycalc.parsing.types import (
     OperationType,
@@ -38,13 +39,13 @@ class Parser:
         elif tok.type == TokenType.IDENT:
             return IdentifierInstruction(tok.value)
 
-        raise RuntimeError("Unexpected token", tok)
+        raise UnexpectedTokenError("Unexpected token", tok)
 
     def _parse_zero_priority_expression(self) -> Instruction:
         tok = self._current_token()
 
         if tok is None:
-            raise RuntimeError("Unexpected EOF")
+            raise EOF("EOF, expected expression, constant or literal.")
 
         if tok.type != TokenType.LPAREN:
             return self._parse_leaf()
@@ -59,6 +60,9 @@ class Parser:
     def _parse_unary_operation(self) -> Instruction:
         current_token = self._current_token()
 
+        if current_token is None:
+            raise EOF(f"Expected expression, constant or literal, found {current_token}")
+
         if current_token.type == TokenType.MINUS:
             self._consume_token()
             return UnaryOperation(
@@ -71,7 +75,7 @@ class Parser:
         consumed = self._consume_token()
 
         if consumed.type != token_type:
-            raise RuntimeError("Unexpected token", consumed)
+            raise UnexpectedTokenError(f"Unexpected token, expected token {token_type}, found {consumed.type}")
 
         return consumed
 
@@ -90,9 +94,10 @@ class Parser:
 
             if current_token.type == TokenType.MUL:
                 op_type = OperationType.MULTIPLICATION
-
             elif current_token.type == TokenType.DIV:
                 op_type = OperationType.DIVISION
+            elif current_token.type == TokenType.POW:
+                op_type = OperationType.POW
             else:
                 break
 
