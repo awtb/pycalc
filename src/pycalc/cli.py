@@ -11,6 +11,12 @@ def build_argument_parser() -> ArgumentParser:
 
     return parser
 
+def repl():
+    while True:
+        expr = input(">> ")
+
+
+
 
 def main():
     parser = build_argument_parser()
