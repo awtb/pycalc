@@ -7,7 +7,7 @@ def test_lexer_basic_tokenization():
 
     tokens = lexer.tokenize()
 
-    assert len(tokens) == 5
+    assert len(tokens) == 6
 
     assert tokens[0].type == TokenType.INT
     assert tokens[0].value == "2"
@@ -25,7 +25,7 @@ def test_more_complex_tokenization():
     tokens = lexer.tokenize()
 
     # Check the total number of tokens
-    assert len(tokens) == 15
+    assert len(tokens) == 16
 
     # Check each token's type and value
     assert tokens[0].type == TokenType.LPAREN
@@ -58,7 +58,7 @@ def test_super_hard_lexer_case():
     tokens = lexer.tokenize()
 
     # Check total number of tokens
-    assert len(tokens) == 25
+    assert len(tokens) == 26
 
     # Check each token's type and value
     assert tokens[0].type == TokenType.LPAREN

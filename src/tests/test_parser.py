@@ -9,7 +9,7 @@ def test_basic_parser():
 
     parser = Parser(tokens)
 
-    instruction = parser.parse()
+    instruction = parser.parse()[0]
 
     assert isinstance(instruction, BinaryOperation)
     assert isinstance(instruction.left, ConstantInstruction)
@@ -29,7 +29,7 @@ def test_complex_parser():
     lexer = Lexer("2 * 3 - 4 * 5 + 6 * 7")
     tokens = lexer.tokenize()
     parser = Parser(tokens)
-    instruction = parser.parse()
+    instruction = parser.parse()[0]
 
     # Top-level operation: addition
     assert isinstance(instruction, BinaryOperation)
@@ -69,7 +69,7 @@ def test_advanced_complex_parser():
     lexer = Lexer("(2 + 3) * (4 - 5) / (6 + 7) * 8")
     tokens = lexer.tokenize()
     parser = Parser(tokens)
-    instruction = parser.parse()
+    instruction = parser.parse()[0]
 
     # Top-level operation: multiplication
     assert isinstance(instruction, BinaryOperation)
