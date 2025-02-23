@@ -14,8 +14,25 @@ def build_argument_parser() -> ArgumentParser:
 
 
 def repl():
+    """
+    Runs interactive calculator
+    :return:
+    """
+    print("PyCalc interactive shell.")
+    print("Use .exit for exit.")
     while True:
         expr = input(">> ")
+
+        if expr == ".exit":
+            break
+
+        try:
+            result = calc(expr)
+        except Exception as e:
+            print(e)
+            continue
+
+        print(result)
 
 
 def main():
@@ -23,11 +40,14 @@ def main():
 
     args = parser.parse_args()
 
+    # If there's no arguments, we run an interactive shell.
     if args.expression:
-        print("Result:", calc(expression=args.expression))
-        return
+        try:
+            res = calc(args.expression)
+        except Exception as e:
+            print(e)
+            return
 
-    while True:
-        expr = input("> ")
+        print(res)
 
-        print("Result:", calc(expr))
+    repl()
