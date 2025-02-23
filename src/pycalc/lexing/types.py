@@ -12,6 +12,7 @@ class TokenType(StrEnum):
     RPAREN = "RPAREN"
     IDENT = "NAME"
     POW = "POW"
+    EOF = "EOF"
 
 
 class Token:
