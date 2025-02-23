@@ -100,4 +100,11 @@ class Lexer:
             else:
                 self._unexpected_symbol(self.text[self._pos])
 
+        self._result.append(
+            self._build_token(
+                TokenType.EOF,
+                value="EOF"
+            )
+        )
+
         return self._result
