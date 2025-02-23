@@ -23,11 +23,11 @@ class Parser:
         self._pos += 1
         return token
 
-    def _current_token(self) -> Token | None:
+    def _current_token(self) -> Token:
         try:
             return self._tokens[self._pos]
         except IndexError:
-            return None
+            return self._tokens[-1]  # EOF
 
     def _parse_leaf(self) -> Instruction:
         tok = self._consume_token()
@@ -39,20 +39,21 @@ class Parser:
         elif tok.type == TokenType.IDENT:
             return IdentifierInstruction(tok.value)
 
-        raise UnexpectedTokenError("Unexpected token", tok)
+        raise UnexpectedTokenError(
+            f"Expected constant or identifier found {tok.type}, line {tok.lineno} ch: {tok.character}",
+        )
 
     def _parse_zero_priority_expression(self) -> Instruction:
         tok = self._current_token()
 
-        if tok is None:
-            raise EOF("EOF, expected expression, constant or literal.")
+        if tok.type == TokenType.EOF:
+            raise UnexpectedTokenError(f"Expected '(', identifier or constant, found {tok.type}")
 
         if tok.type != TokenType.LPAREN:
             return self._parse_leaf()
 
         self._consume_token()
         expr = self._parse_instruction()
-
         self._expect_token(TokenType.RPAREN)
 
         return expr
@@ -60,7 +61,7 @@ class Parser:
     def _parse_unary_operation(self) -> Instruction:
         current_token = self._current_token()
 
-        if current_token is None:
+        if current_token.type == TokenType.EOF:
             raise EOF(f"Expected expression, constant or literal, found {current_token}")
 
         if current_token.type == TokenType.MINUS:
@@ -79,18 +80,12 @@ class Parser:
 
         return consumed
 
-    def _next_type(self) -> TokenType | None:
-        if (self._pos + 1) < len(self._tokens):
-            return self._tokens[self._pos + 1].type
-
     def _parse_high_priority_binary_operation(self) -> Instruction:
         expression = self._parse_unary_operation()
+        current_token = self._current_token()
 
-        while True:
+        while current_token.type != TokenType.EOF:
             current_token = self._current_token()
-
-            if current_token is None:
-                break
 
             if current_token.type == TokenType.MUL:
                 op_type = OperationType.MULTIPLICATION
@@ -109,17 +104,15 @@ class Parser:
                 right=self._parse_unary_operation(),
             )
 
+            current_token = self._current_token()
+
         return expression
 
     def _parse_low_priority_binary_operation(self) -> Instruction:
         expression = self._parse_high_priority_binary_operation()
+        current_token = self._current_token()
 
-        while True:
-            current_token = self._current_token()
-
-            if current_token is None:
-                break
-
+        while current_token.type != TokenType.EOF:
             if current_token.type == TokenType.PLUS:
                 op_type = OperationType.ADDITION
 
@@ -136,6 +129,8 @@ class Parser:
                 right=self._parse_high_priority_binary_operation(),
             )
 
+            current_token = self._current_token()
+
         return expression
 
     def _parse_instruction(self) -> Instruction:
@@ -144,7 +139,7 @@ class Parser:
     def parse(self) -> List[Instruction]:
         instructions_list = []
 
-        while self._pos < len(self._tokens):
+        while self._pos < len(self._tokens) and self._current_token().type != TokenType.EOF:
             instructions_list.append(self._parse_instruction())
 
         return instructions_list
