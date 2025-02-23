@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 
 from pycalc.calculator import calc
 
+
 def build_argument_parser() -> ArgumentParser:
     parser = ArgumentParser(
         prog="pycalc", description="A simple calculator", epilog="Help"
@@ -11,11 +12,10 @@ def build_argument_parser() -> ArgumentParser:
 
     return parser
 
+
 def repl():
     while True:
         expr = input(">> ")
-
-
 
 
 def main():
