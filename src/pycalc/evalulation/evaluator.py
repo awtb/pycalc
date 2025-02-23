@@ -41,6 +41,8 @@ class Evaluator:
             if instruction.op_type == OperationType.SUBTRACTION:
                 return -self._evaluate(instruction.operand)
             raise RuntimeError("Invalid operation type", instruction.op_type)
+        else:
+            raise NotImplementedError(f"Unsupported instruction", instruction)
 
     def evaluate(self):
         return self._evaluate(self.expression)
