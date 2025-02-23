@@ -94,17 +94,12 @@ class Lexer:
                 )
             elif self.text[self._pos].isspace():
                 self._pos += 1
-            elif self.text[self._pos] == '\n':
+            elif self.text[self._pos] == "\n":
                 self._pos += 1
                 self._lineno += 1
             else:
                 self._unexpected_symbol(self.text[self._pos])
 
-        self._result.append(
-            self._build_token(
-                TokenType.EOF,
-                value="EOF"
-            )
-        )
+        self._result.append(self._build_token(TokenType.EOF, value="EOF"))
 
         return self._result
