@@ -47,7 +47,9 @@ class Parser:
         tok = self._current_token()
 
         if tok.type == TokenType.EOF:
-            raise UnexpectedTokenError(f"Expected '(', identifier or constant, found {tok.type}")
+            raise UnexpectedTokenError(
+                f"Expected '(', identifier or constant, found {tok.type}"
+            )
 
         if tok.type != TokenType.LPAREN:
             return self._parse_leaf()
@@ -62,7 +64,9 @@ class Parser:
         current_token = self._current_token()
 
         if current_token.type == TokenType.EOF:
-            raise EOF(f"Expected expression, constant or literal, found {current_token}")
+            raise EOF(
+                f"Expected expression, constant or literal, found EOF, line {current_token.lineno} ch: {current_token.character}",
+            )
 
         if current_token.type == TokenType.MINUS:
             self._consume_token()
@@ -76,7 +80,9 @@ class Parser:
         consumed = self._consume_token()
 
         if consumed.type != token_type:
-            raise UnexpectedTokenError(f"Unexpected token, expected token {token_type}, found {consumed.type}")
+            raise UnexpectedTokenError(
+                f"Unexpected token, expected token {token_type}, found {consumed.type}"
+            )
 
         return consumed
 
@@ -139,7 +145,10 @@ class Parser:
     def parse(self) -> List[Instruction]:
         instructions_list = []
 
-        while self._pos < len(self._tokens) and self._current_token().type != TokenType.EOF:
+        while (
+            self._pos < len(self._tokens)
+            and self._current_token().type != TokenType.EOF
+        ):
             instructions_list.append(self._parse_instruction())
 
         return instructions_list
