@@ -1,6 +1,8 @@
 # PyCalc
 
-PyCalc is a versatile calculator library and command-line tool written in Python. It supports basic arithmetic operations and essential mathematical functions, making it a handy tool for quick calculations or a reusable library for your Python projects.
+PyCalc is a versatile calculator library and command-line tool written in Python. It supports basic arithmetic
+operations and essential mathematical functions, making it a handy tool for quick calculations or a reusable library for
+your Python projects.
 
 ## Features
 
@@ -24,11 +26,13 @@ python -m pycalc --expression 2 + 2 / 4
 ```
 
 Want a REPL?
+
 ```bash
 python -m pycalc
 ```
 
 ### Using programming interface
+
 ```python
 from pycalc.calculator import calc
 
@@ -36,5 +40,11 @@ expression = "2 + 4 / 2"
 result = calc(expression)
 
 print(result)
+```
+
+### Run tests
+
+```bash
+poetry run pytest
 ```
 
