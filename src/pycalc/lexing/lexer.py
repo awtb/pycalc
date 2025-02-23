@@ -1,5 +1,6 @@
 from typing import List, Callable
 
+from pycalc.exceptions.lexer import UnexpectedSymbolError
 from src.pycalc.lexing.constants import CHARS_TOKEN_MAPPING
 from src.pycalc.lexing.types import Token, TokenType
 
@@ -8,6 +9,7 @@ class Lexer:
     def __init__(self, text):
         self.text = text
         self._pos = 0
+        self._lineno = 0
         self._result = []
 
     def _parse_till(self, fn: Callable[[str], bool]):
@@ -36,7 +38,7 @@ class Lexer:
             value += self.text[self._pos]
             self._pos += 1
 
-        return Token(tok_type, value)
+        return self._build_token(tok_type, value)
 
     def _parse_identifier(self) -> Token:
         """
@@ -56,7 +58,19 @@ class Lexer:
             value += self.text[self._pos]
             self._pos += 1
 
-        return Token(tok_type, value)
+        return self._build_token(tok_type, value)
+
+    def _build_token(
+        self,
+        token_type: TokenType,
+        value: str,
+    ):
+        return Token(token_type, value, self._lineno, self._pos)
+
+    def _unexpected_symbol(self, symbol: str):
+        raise UnexpectedSymbolError(
+            f"Unexpected {self.text[self._pos]} Line: {self._lineno}, Ch: {self._pos}"
+        )
 
     def tokenize(self) -> List[Token]:
         """
@@ -66,7 +80,7 @@ class Lexer:
         while self._pos < len(self.text):
             if self.text[self._pos] in CHARS_TOKEN_MAPPING:
                 self._result.append(
-                    Token(
+                    self._build_token(
                         CHARS_TOKEN_MAPPING[self.text[self._pos]],
                         self.text[self._pos],
                     )
@@ -74,13 +88,16 @@ class Lexer:
                 self._pos += 1
             elif self.text[self._pos].isdigit():
                 self._result.append(self._parse_literal())
-                continue
-
             elif self.text[self._pos].isalpha():
                 self._result.append(
                     self._parse_identifier(),
                 )
             elif self.text[self._pos].isspace():
                 self._pos += 1
+            elif self.text[self._pos] == '\n':
+                self._pos += 1
+                self._lineno += 1
+            else:
+                self._unexpected_symbol(self.text[self._pos])
 
         return self._result
