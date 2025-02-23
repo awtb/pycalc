@@ -9,6 +9,7 @@ class OperationType(Enum):
     DIVISION = 4
     EQUAL = 5
     NOT_EQUAL = 6
+    POW = 7
 
 
 class ConstantType(Enum):
