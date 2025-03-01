@@ -1,5 +1,6 @@
 from abc import ABC
 from enum import Enum
+from typing import List
 
 
 class OperationType(Enum):
@@ -55,6 +56,18 @@ class BinaryOperation(Instruction):
         self.left = left
         self.right = right
         self.op_type = op_type
+
+
+class CallInstruction(Instruction):
+    """Call instruction class."""
+
+    def __init__(
+        self,
+        identifier: str,
+        arguments: List[Instruction],
+    ):
+        self.identifier = identifier
+        self.arguments = arguments
 
 
 class UnaryOperation(Instruction):
