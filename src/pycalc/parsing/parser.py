@@ -9,7 +9,7 @@ from pycalc.parsing.types import (
     ConstantInstruction,
     ConstantType,
     IdentifierInstruction,
-    UnaryOperation,
+    UnaryOperation, CallInstruction,
 )
 
 
@@ -60,6 +60,51 @@ class Parser:
 
         return expr
 
+    def _next_token(self) -> Token:
+        if self._pos >= len(self._tokens):
+            return self._tokens[-1]
+
+        return self._tokens[self._pos + 1]
+
+    def _parse_call(self) -> Instruction:
+        current_token = self._current_token()
+        next_token = self._next_token()
+
+        if current_token.type != TokenType.IDENT or self._next_token().type != TokenType.LPAREN:
+            return self._parse_zero_priority_expression()
+
+        # It's call, need to parse arguments
+
+        identifier = self._consume_token()
+
+        # Consume lparen
+        self._consume_token()
+
+        arguments = []
+
+        while self._current_token().type != TokenType.RPAREN:
+            arguments.append(
+                self._parse_instruction(),
+            )
+
+            # Parse comma if needed
+
+            if self._current_token().type == TokenType.COMMA:
+                self._consume_token()
+
+        if self._current_token().type != TokenType.RPAREN:
+            raise UnexpectedTokenError(
+                f"Expected ')', found {self._current_token().type}, line {self._current_token().lineno}"
+            )
+
+        # Consume rparen
+        self._consume_token()
+
+        return CallInstruction(
+            identifier=identifier.value,
+            arguments=arguments,
+        )
+
     def _parse_unary_operation(self) -> Instruction:
         current_token = self._current_token()
 
@@ -74,7 +119,7 @@ class Parser:
                 OperationType.SUBTRACTION, self._parse_unary_operation()
             )
 
-        return self._parse_zero_priority_expression()
+        return self._parse_call()
 
     def _expect_token(self, token_type: TokenType):
         consumed = self._consume_token()
