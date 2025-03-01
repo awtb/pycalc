@@ -1,6 +1,8 @@
 from argparse import ArgumentParser
 
 from pycalc.calculator import calc
+from pycalc.lexing.lexer import Lexer
+from pycalc.parsing.parser import Parser
 
 
 def build_argument_parser() -> ArgumentParser:
@@ -9,6 +11,9 @@ def build_argument_parser() -> ArgumentParser:
     )
 
     parser.add_argument("--expression", type=str, required=False)
+    parser.add_argument("--show-tokens", action="store_true")
+    parser.add_argument("--show-ast", action="store_true")
+
 
     return parser
 
@@ -39,6 +44,19 @@ def main():
     parser = build_argument_parser()
 
     args = parser.parse_args()
+
+    if args.show_tokens:
+        lexer = Lexer(args.expression)
+        tokens = lexer.tokenize()
+
+        print("Tokens:", tokens)
+
+    if args.show_ast:
+        lexer = Lexer(args.expression)
+        tokens = lexer.tokenize()
+        parser = Parser(tokens)
+        ast = parser.parse()
+        print("AST:", ast)
 
     # If there's no arguments, we run an interactive shell.
     if args.expression:
