@@ -13,6 +13,7 @@ class TokenType(StrEnum):
     IDENT = "NAME"
     POW = "POW"
     EOF = "EOF"
+    COMMA = "COMMA"
 
 
 class Token:
@@ -26,4 +27,4 @@ class Token:
         return f"{self.type}: {self.value}"
 
     def __repr__(self):
-        return f"{self.__class__.__name__}({self.type}, {self.value})"
+        return f"{self.__class__.__name__}[{self.type}, {self.value}]"
