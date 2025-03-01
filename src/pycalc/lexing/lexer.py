@@ -88,6 +88,14 @@ class Lexer:
                 self._pos += 1
             elif self.text[self._pos].isdigit():
                 self._result.append(self._parse_literal())
+            elif self.text[self._pos] == ',':
+                self._result.append(
+                    self._build_token(
+                        TokenType.COMMA,
+                        self.text[self._pos]
+                    )
+                )
+                self._pos += 1
             elif self.text[self._pos].isalpha():
                 self._result.append(
                     self._parse_identifier(),
