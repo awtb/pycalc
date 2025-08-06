@@ -1,15 +1,16 @@
 from typing import List
 
-from pycalc.exceptions.parser import UnexpectedTokenError, EOF
+from pycalc.exceptions.parser import EOF, UnexpectedTokenError
 from pycalc.lexing.types import Token, TokenType
 from pycalc.parsing.types import (
-    OperationType,
-    Instruction,
     BinaryOperation,
+    CallInstruction,
     ConstantInstruction,
     ConstantType,
     IdentifierInstruction,
-    UnaryOperation, CallInstruction,
+    Instruction,
+    OperationType,
+    UnaryOperation,
 )
 
 
@@ -40,7 +41,11 @@ class Parser:
             return IdentifierInstruction(tok.value)
 
         raise UnexpectedTokenError(
-            f"Expected constant or identifier found {tok.type}, line {tok.lineno} ch: {tok.character}",
+            "Expected constant or identifier found {}, line {} ch: {}".format(
+                tok.type,
+                tok.lineno,
+                tok.character,
+            )
         )
 
     def _parse_zero_priority_expression(self) -> Instruction:
@@ -68,9 +73,11 @@ class Parser:
 
     def _parse_call(self) -> Instruction:
         current_token = self._current_token()
-        next_token = self._next_token()
 
-        if current_token.type != TokenType.IDENT or self._next_token().type != TokenType.LPAREN:
+        if (
+            current_token.type != TokenType.IDENT
+            or self._next_token().type != TokenType.LPAREN
+        ):
             return self._parse_zero_priority_expression()
 
         # It's call, need to parse arguments
@@ -94,7 +101,9 @@ class Parser:
 
         if self._current_token().type != TokenType.RPAREN:
             raise UnexpectedTokenError(
-                f"Expected ')', found {self._current_token().type}, line {self._current_token().lineno}"
+                "Expected ')', found {}, line {}".format(
+                    self._current_token().type, self._current_token().lineno
+                )
             )
 
         # Consume rparen
@@ -110,7 +119,10 @@ class Parser:
 
         if current_token.type == TokenType.EOF:
             raise EOF(
-                f"Expected expression, constant or literal, found EOF, line {current_token.lineno} ch: {current_token.character}",
+                "Expected expression. found EOF, line {} ch: {}".format(
+                    current_token.lineno,
+                    current_token.character,
+                ),
             )
 
         if current_token.type == TokenType.MINUS:
@@ -126,7 +138,9 @@ class Parser:
 
         if consumed.type != token_type:
             raise UnexpectedTokenError(
-                f"Unexpected token, expected token {token_type}, found {consumed.type}"
+                "Unexpected token, expected token {}, found {}".format(
+                    consumed.type, token_type
+                )
             )
 
         return consumed

@@ -17,7 +17,13 @@ class TokenType(StrEnum):
 
 
 class Token:
-    def __init__(self, token_type: TokenType, value: str, lineno: int, character: int):
+    def __init__(
+        self,
+        token_type: TokenType,
+        value: str,
+        lineno: int,
+        character: int,
+    ):
         self.type = token_type
         self.value = value
         self.lineno = lineno

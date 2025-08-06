@@ -1,6 +1,10 @@
 from pycalc.lexing.lexer import Lexer
 from pycalc.parsing.parser import Parser
-from pycalc.parsing.types import BinaryOperation, OperationType, ConstantInstruction
+from pycalc.parsing.types import (  # noqa
+    BinaryOperation,
+    ConstantInstruction,
+    OperationType,
+)
 
 
 def test_basic_parser():

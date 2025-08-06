@@ -1,4 +1,4 @@
-from typing import List, Callable
+from typing import Callable, List
 
 from pycalc.exceptions.lexer import UnexpectedSymbolError
 from src.pycalc.lexing.constants import CHARS_TOKEN_MAPPING
@@ -69,7 +69,11 @@ class Lexer:
 
     def _unexpected_symbol(self, symbol: str):
         raise UnexpectedSymbolError(
-            f"Unexpected {self.text[self._pos]} Line: {self._lineno}, Ch: {self._pos}"
+            "Unexpected {} Line: {}, Ch: {}".format(
+                self.text[self._pos],
+                self._lineno,
+                self._pos,
+            )
         )
 
     def tokenize(self) -> List[Token]:
@@ -88,12 +92,9 @@ class Lexer:
                 self._pos += 1
             elif self.text[self._pos].isdigit():
                 self._result.append(self._parse_literal())
-            elif self.text[self._pos] == ',':
+            elif self.text[self._pos] == ",":
                 self._result.append(
-                    self._build_token(
-                        TokenType.COMMA,
-                        self.text[self._pos]
-                    )
+                    self._build_token(TokenType.COMMA, self.text[self._pos])
                 )
                 self._pos += 1
             elif self.text[self._pos].isalpha():
