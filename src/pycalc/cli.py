@@ -14,7 +14,6 @@ def build_argument_parser() -> ArgumentParser:
     parser.add_argument("--show-tokens", action="store_true")
     parser.add_argument("--show-ast", action="store_true")
 
-
     return parser
 
 
