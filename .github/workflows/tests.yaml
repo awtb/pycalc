@@ -23,17 +23,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-        env:
-          POETRY_HOME: $HOME/.poetry
-
-      - name: Add Poetry to PATH
-        run: echo "$HOME/.poetry/bin" >> $GITHUB_PATH
-
-      - name: Configure Poetry (no venv)
-        run: poetry config virtualenvs.create false
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: '2.1.4'
 
       - name: Install dependencies
         run: poetry install
