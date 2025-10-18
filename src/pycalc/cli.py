@@ -53,8 +53,8 @@ def main() -> None:
     if args.show_ast:
         lexer = Lexer(args.expression)
         tokens = lexer.tokenize()
-        parser = Parser(tokens)
-        ast = parser.parse()
+        dsl_parser = Parser(tokens)
+        ast = dsl_parser.parse()
         print("AST:", ast)
 
     # If there's no arguments, we run an interactive shell.
