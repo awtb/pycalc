@@ -17,7 +17,7 @@ def build_argument_parser() -> ArgumentParser:
     return parser
 
 
-def repl():
+def repl() -> None:
     """
     Runs interactive calculator
     :return:
@@ -39,7 +39,7 @@ def repl():
         print(result)
 
 
-def main():
+def main() -> None:
     parser = build_argument_parser()
 
     args = parser.parse_args()
@@ -53,8 +53,8 @@ def main():
     if args.show_ast:
         lexer = Lexer(args.expression)
         tokens = lexer.tokenize()
-        parser = Parser(tokens)
-        ast = parser.parse()
+        dsl_parser = Parser(tokens)
+        ast = dsl_parser.parse()
         print("AST:", ast)
 
     # If there's no arguments, we run an interactive shell.

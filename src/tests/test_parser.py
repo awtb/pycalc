@@ -1,6 +1,6 @@
-from pycalc.lexing.lexer import Lexer
-from pycalc.parsing.parser import Parser
-from pycalc.parsing.types import (  # noqa
+from src.pycalc.lexing.lexer import Lexer
+from src.pycalc.parsing.parser import Parser
+from src.pycalc.parsing.types import (  # noqa
     BinaryOperation,
     ConstantInstruction,
     OperationType,
@@ -14,7 +14,6 @@ def test_basic_parser():
     parser = Parser(tokens)
 
     instruction = parser.parse()[0]
-
     assert isinstance(instruction, BinaryOperation)
     assert isinstance(instruction.left, ConstantInstruction)
     assert isinstance(instruction.right, BinaryOperation)

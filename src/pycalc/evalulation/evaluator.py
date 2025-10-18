@@ -1,4 +1,4 @@
-from pycalc.parsing.types import (
+from src.pycalc.parsing.types import (
     BinaryOperation,
     ConstantInstruction,
     ConstantType,
@@ -13,6 +13,9 @@ class Evaluator:
         self.expression = expression
 
     def _evaluate(self, instruction: Instruction) -> float | int:
+        if not isinstance(instruction, Instruction):
+            raise TypeError(f"Expected instruction got {instruction}")
+
         if isinstance(instruction, ConstantInstruction):
             if instruction.constant_type == ConstantType.FLOAT:
                 return float(instruction.value)
@@ -44,5 +47,5 @@ class Evaluator:
         else:
             raise NotImplementedError("Unsupported instruction", instruction)
 
-    def evaluate(self):
+    def evaluate(self) -> float | int:
         return self._evaluate(self.expression)

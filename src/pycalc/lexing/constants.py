@@ -1,6 +1,8 @@
+from typing import Dict
+
 from src.pycalc.lexing.types import TokenType
 
-CHARS_TOKEN_MAPPING = {
+CHARS_TOKEN_MAPPING: Dict[str, TokenType] = {
     "*": TokenType.MUL,
     "+": TokenType.PLUS,
     "-": TokenType.MINUS,

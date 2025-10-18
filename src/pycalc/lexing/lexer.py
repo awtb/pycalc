@@ -1,18 +1,18 @@
 from typing import Callable, List
 
-from pycalc.exceptions.lexer import UnexpectedSymbolError
+from src.pycalc.exceptions.lexer import UnexpectedSymbolError
 from src.pycalc.lexing.constants import CHARS_TOKEN_MAPPING
 from src.pycalc.lexing.types import Token, TokenType
 
 
 class Lexer:
-    def __init__(self, text):
-        self.text = text
-        self._pos = 0
-        self._lineno = 0
-        self._result = []
+    def __init__(self, text: str) -> None:
+        self.text: str = text
+        self._pos: int = 0
+        self._lineno: int = 0
+        self._result: List[Token] = []
 
-    def _parse_till(self, fn: Callable[[str], bool]):
+    def _parse_till(self, fn: Callable[[str], bool]) -> str:
         value = ""
 
         while self._pos < len(self.text) and fn(self.text[self._pos]):
@@ -64,10 +64,10 @@ class Lexer:
         self,
         token_type: TokenType,
         value: str,
-    ):
+    ) -> Token:
         return Token(token_type, value, self._lineno, self._pos)
 
-    def _unexpected_symbol(self, symbol: str):
+    def _unexpected_symbol(self, symbol: str) -> None:
         raise UnexpectedSymbolError(
             "Unexpected {} Line: {}, Ch: {}".format(
                 self.text[self._pos],

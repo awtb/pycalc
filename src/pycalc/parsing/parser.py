@@ -1,8 +1,8 @@
 from typing import List
 
-from pycalc.exceptions.parser import EOF, UnexpectedTokenError
-from pycalc.lexing.types import Token, TokenType
-from pycalc.parsing.types import (
+from src.pycalc.exceptions.parser import EOF, UnexpectedTokenError
+from src.pycalc.lexing.types import Token, TokenType
+from src.pycalc.parsing.types import (
     BinaryOperation,
     CallInstruction,
     ConstantInstruction,
@@ -15,7 +15,7 @@ from pycalc.parsing.types import (
 
 
 class Parser:
-    def __init__(self, tokens: List[Token]):
+    def __init__(self, tokens: List[Token]) -> None:
         self._tokens = tokens
         self._pos = 0
 
@@ -133,7 +133,7 @@ class Parser:
 
         return self._parse_call()
 
-    def _expect_token(self, token_type: TokenType):
+    def _expect_token(self, token_type: TokenType) -> Token:
         consumed = self._consume_token()
 
         if consumed.type != token_type:
