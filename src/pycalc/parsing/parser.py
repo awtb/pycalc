@@ -133,7 +133,7 @@ class Parser:
 
         return self._parse_call()
 
-    def _expect_token(self, token_type: TokenType):
+    def _expect_token(self, token_type: TokenType) -> Token:
         consumed = self._consume_token()
 
         if consumed.type != token_type:
