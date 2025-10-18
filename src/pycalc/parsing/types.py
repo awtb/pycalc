@@ -36,6 +36,9 @@ class ConstantInstruction(Instruction):
         self.value = value
         self.constant_type = constant_type
 
+    def __repr__(self):
+        return f'{self.__class__.__name__}({self.value}, {self.constant_type})'
+
 
 class IdentifierInstruction(Instruction):
     """Identifier instruction class."""
@@ -52,10 +55,16 @@ class BinaryOperation(Instruction):
         left: Instruction,
         right: Instruction,
         op_type: OperationType,
-    ):
+    ) -> None:
         self.left = left
         self.right = right
         self.op_type = op_type
+
+    def __str__(self) -> str:
+        return f"({self.left} {self.op_type} {self.right})"
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 class CallInstruction(Instruction):
@@ -65,7 +74,7 @@ class CallInstruction(Instruction):
         self,
         identifier: str,
         arguments: List[Instruction],
-    ):
+    ) -> None:
         self.identifier = identifier
         self.arguments = arguments
 

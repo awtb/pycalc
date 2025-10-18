@@ -1,6 +1,7 @@
-from pycalc.evalulation.evaluator import Evaluator
-from pycalc.lexing.lexer import Lexer
-from pycalc.parsing.parser import Parser
+from src.pycalc.evalulation.evaluator import Evaluator
+from src.pycalc.lexing.lexer import Lexer
+from src.pycalc.parsing.parser import Parser
+from src.pycalc.parsing.types import BinaryOperation
 
 
 def test_simple_evaluation():
@@ -21,6 +22,7 @@ def test_complex_parentheses():
     lexer = Lexer(expression)
     parser = Parser(lexer.tokenize())
     instructions = parser.parse()
+    assert isinstance(instructions, list)
     evaluator = Evaluator(instructions[0])
     result = evaluator.evaluate()
 

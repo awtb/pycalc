@@ -13,6 +13,9 @@ class Evaluator:
         self.expression = expression
 
     def _evaluate(self, instruction: Instruction) -> float | int:
+        if not isinstance(instruction, Instruction):
+            raise TypeError(f"Expected instruction got {instruction}")
+
         if isinstance(instruction, ConstantInstruction):
             if instruction.constant_type == ConstantType.FLOAT:
                 return float(instruction.value)
