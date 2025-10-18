@@ -37,7 +37,7 @@ class ConstantInstruction(Instruction):
         self.constant_type = constant_type
 
     def __repr__(self):
-        return f'{self.__class__.__name__}({self.value}, {self.constant_type})'
+        return f"{self.__class__.__name__}({self.value}, {self.constant_type})"
 
 
 class IdentifierInstruction(Instruction):

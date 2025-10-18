@@ -1,7 +1,6 @@
 from src.pycalc.evalulation.evaluator import Evaluator
 from src.pycalc.lexing.lexer import Lexer
 from src.pycalc.parsing.parser import Parser
-from src.pycalc.parsing.types import BinaryOperation
 
 
 def test_simple_evaluation():
