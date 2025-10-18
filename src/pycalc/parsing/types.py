@@ -77,6 +77,6 @@ class UnaryOperation(Instruction):
         self,
         op_type: OperationType,
         operand: Instruction,
-    ):
+    ) -> None:
         self.op_type = op_type
         self.operand = operand
