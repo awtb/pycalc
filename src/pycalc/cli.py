@@ -17,7 +17,7 @@ def build_argument_parser() -> ArgumentParser:
     return parser
 
 
-def repl():
+def repl() -> None:
     """
     Runs interactive calculator
     :return:
@@ -39,7 +39,7 @@ def repl():
         print(result)
 
 
-def main():
+def main() -> None:
     parser = build_argument_parser()
 
     args = parser.parse_args()
