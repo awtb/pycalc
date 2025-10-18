@@ -6,11 +6,11 @@ from src.pycalc.lexing.types import Token, TokenType
 
 
 class Lexer:
-    def __init__(self, text) -> None:
-        self.text = text
-        self._pos = 0
-        self._lineno = 0
-        self._result = []
+    def __init__(self, text: str) -> None:
+        self.text: str = text
+        self._pos: int = 0
+        self._lineno: int = 0
+        self._result: List[Token] = []
 
     def _parse_till(self, fn: Callable[[str], bool]) -> str:
         value = ""
